@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(impeccable)",
+      "Bash(node \"C:\\\\Users\\\\hp\\\\.claude\\\\skills\\\\impeccable\\\\scripts\\\\context.mjs\" --target src/App.tsx)",
+      "Bash(npm run *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr 1420)",
+      "Bash(taskkill *)"
+    ]
+  }
+}

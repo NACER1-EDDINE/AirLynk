@@ -1,0 +1,30 @@
+[package]
+name = "airlynk-crypto"
+version.workspace = true
+edition.workspace = true
+description = "AirLynk payload cipher — AES-GCM, one implementation compiled for native and wasm32"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+aes-gcm = "0.10"
+subtle = "2"
+thiserror = "2"
+
+# rand is native-only: on wasm32-unknown-unknown, rand pulls getrandom, which
+# requires the "js" feature that does not exist on a bare wasm target.
+# The WASM side never generates keys — the key arrives from JS.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rand = { version = "0.9", features = ["os_rng"] }
+
+# aead -> crypto-common pulls getrandom 0.2 into every target; on wasm that
+# crate refuses to compile without a backend. The "js" backend drags in
+# wasm-bindgen + js_sys + a JS shim, which the primitive phone client must not
+# need. Use the "custom" backend with a stub instead: the WASM cipher never
+# generates keys (the key arrives from JS), so the stub is never called.
+[target.wasm32-unknown-unknown.dependencies]
+getrandom = { version = "0.2", features = ["custom"] }
+
+[dev-dependencies]
+serde_json = "1"
